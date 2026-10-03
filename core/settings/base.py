@@ -31,7 +31,8 @@ INSTALLED_APPS = [
 
     # third party
     'rest_framework',
-    'drf_spectacular',
+    'drf_spectacular', 
+    'rest_framework_simplejwt',
 
     # my app
     'account.apps.AccountConfig',
@@ -130,9 +131,9 @@ AUTH_USER_MODEL = "account.User"
 
 # Restframework setting
 REST_FRAMEWORK = {
-    # "DEFAULT_PERMISSION_CLASSES": [
-    #     "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
-    # ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
