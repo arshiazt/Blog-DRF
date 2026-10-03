@@ -29,8 +29,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # 
-    "rest_framework",
+    # third party
+    'rest_framework',
+    'drf_spectacular',
 
     # my app
     'account.apps.AccountConfig',
@@ -131,5 +132,15 @@ AUTH_USER_MODEL = "account.User"
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
-    ]
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+# Swagger setting
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Advanced Blog API',
+    'DESCRIPTION': 'A blog project for Django practice.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
 }
