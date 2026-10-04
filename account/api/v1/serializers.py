@@ -2,8 +2,7 @@ from rest_framework import serializers
 from account.models import User
 from django.contrib.auth.password_validation import validate_password
 from django.core import exceptions
-from rest_framework_simplejwt.serializers import (TokenObtainPairSerializer,
-        TokenRefreshSerializer, TokenVerifySerializer) 
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class RegistrationSerializer(serializers.ModelSerializer):
     password_confirm = serializers.CharField(max_length=255, write_only=True, min_length=8)
