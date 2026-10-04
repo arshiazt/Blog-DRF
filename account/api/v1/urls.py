@@ -9,4 +9,5 @@ urlpatterns = [
     path('login',views.CustomTokenObtainPairView.as_view(),name='login'),
     path("jwt/refresh/", TokenRefreshView.as_view(), name="jwt-refresh"),
     path("jwt/verify/", TokenVerifyView.as_view(), name="jwt-verify"),
+    path('logout/', views.LogoutApiView.as_view(),name='logout'),
 ]
