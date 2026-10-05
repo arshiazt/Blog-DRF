@@ -36,3 +36,18 @@ class LogoutApiView(views.APIView):
                 {"detail": "Invalid refresh token."},
                 status=status.HTTP_400_BAD_REQUEST
             )
+        
+class PasswordChangeApiView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = PasswordChangeSerializer(
+            data=request.data,
+            context={'request':request}
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(
+            {"detail": "Password changed successfully."},
+            status=status.HTTP_200_OK
+        )
