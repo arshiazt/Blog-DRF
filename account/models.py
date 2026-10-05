@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+import random
 
 # Create your models here.
 
@@ -64,3 +65,21 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.phone
+    
+class PasswordResetOTPCode(models.Model):
+
+    user = models.ForeignKey(User,on_delete=models.CASCADE,related_name='password_reset_otp')
+    otp_code = models.CharField(max_length=6)
+    is_used = models.BooleanField(default=False)
+    created_date = models.DateTimeField(auto_now_add=True)
+
+    @classmethod
+    def generate_otp(cls,user):
+        otp_code = str(random.randint(100000,999999))
+        is_used = False
+        cls.objects.create(
+            user=user,
+            otp_code=otp_code,
+            is_used=is_used
+        )
+        return otp_code
