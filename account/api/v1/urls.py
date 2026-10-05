@@ -5,9 +5,12 @@ from . import views
 app_name = 'api-v1'
 
 urlpatterns = [
-    path('register',views.RegisterCreateApiView.as_view(),name='register'),
-    path('login',views.CustomTokenObtainPairView.as_view(),name='login'),
+    path('register/',views.RegisterCreateApiView.as_view(),name='register'),
+    path('login/',views.CustomTokenObtainPairView.as_view(),name='login'),
+    path('logout/', views.LogoutApiView.as_view(),name='logout'),
+
     path("jwt/refresh/", TokenRefreshView.as_view(), name="jwt-refresh"),
     path("jwt/verify/", TokenVerifyView.as_view(), name="jwt-verify"),
-    path('logout/', views.LogoutApiView.as_view(),name='logout'),
+    
+    path('change-password/',views.PasswordChangeApiView.as_view(),name='change-password'),
 ]
