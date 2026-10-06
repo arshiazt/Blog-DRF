@@ -193,3 +193,30 @@ class VerifyOTPSerializer(serializers.Serializer):
         attrs["user"] = user
 
         return attrs
+    
+class ResetPasswordSerializer(serializers.Serializer):
+    
+    new_password = serializers.CharField(write_only=True,min_length=8)
+    new_password_confirm = serializers.CharField(write_only=True,min_length=8)
+
+    def validate(self, attrs):
+        if attrs.get('new_password') != attrs.get('new_password_confirm'):
+            raise serializers.ValidationError({
+                "new_password_confirm": "Passwords do not match."
+            })
+        return attrs
+        
+    def validate_new_password(self, value):
+        try:
+            validate_password(value)
+        except exceptions.ValidationError as e:
+            raise serializers.ValidationError({"new_password": list(e.messages)})
+        
+        return value
+    
+    def save(self, **kwargs):
+        user = self.context['user']
+        user.set_password(self.validated_data["new_password"])
+        user.save()
+
+        return user
