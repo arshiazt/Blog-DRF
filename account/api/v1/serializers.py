@@ -100,3 +100,30 @@ class PasswordChangeSerializer(serializers.Serializer):
         user.save()
 
         return user
+    
+class ForgotPasswordSerializer(serializers.Serializer):
+    phone = serializers.CharField(max_length=11,write_only=True)
+
+    def validate_phone(self,value):
+        if len(value) != 11:
+            raise serializers.ValidationError(
+                'Phone must be exactly 11 digits.'
+            )
+        
+        if not value.isdigit():
+            raise serializers.ValidationError(
+                'Phone must contain only digits.'
+            )
+        
+        return value
+    
+    def validate(self, attrs):
+        phone = attrs.get('phone')
+        user_exists  = User.objects.filter(phone=phone).exists()
+        
+        if not user_exists :
+            raise serializers.ValidationError(
+                {"phone": "User with this phone number does not exist."}
+            )
+        
+        return attrs
