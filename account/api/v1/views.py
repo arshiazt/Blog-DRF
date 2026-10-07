@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import *
 from .permissions import IsAnonymous
+from .tokens import PasswordResetToken
 from ...tasks import send_otp_code_task
 
 class RegisterCreateApiView(generics.CreateAPIView):
@@ -77,9 +78,12 @@ class VerifyOTPApiView(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+
         user = serializer.validated_data['user']
+        reset_token = PasswordResetToken.for_user(user)
 
         return Response(
-            {"detail": "OTP verified successfully."},
+            {"detail": "OTP verified successfully.",
+             "reset_token":str(reset_token)},
             status=status.HTTP_200_OK
         )
