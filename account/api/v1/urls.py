@@ -15,4 +15,5 @@ urlpatterns = [
     path('change-password/',views.PasswordChangeApiView.as_view(),name='change-password'),
     path('forgot-password/',views.ForgotPasswordApiView.as_view(),name='forgot-password'),
     path('verify-otp/',views.VerifyOTPApiView.as_view(),name='verify'),
+    path('reset-password/',views.ResetPasswordApiView.as_view(),name='reset-password'),
 ]

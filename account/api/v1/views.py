@@ -91,6 +91,8 @@ class VerifyOTPApiView(generics.GenericAPIView):
     
 class ResetPasswordApiView(generics.GenericAPIView):
     serializer_class = ResetPasswordSerializer
+    authentication_classes = []
+    permission_classes = []
 
     def post(self, request, *args, **kwargs):
         token = request.headers.get("Authorization")
@@ -125,7 +127,7 @@ class ResetPasswordApiView(generics.GenericAPIView):
                 {"detail": "User does not exist."},
                 status=status.HTTP_404_NOT_FOUND
             )
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(data=request.data,context={"user": user})
         serializer.is_valid(raise_exception=True)
         serializer.save(user=user)
 
