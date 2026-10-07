@@ -3,6 +3,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
 from .serializers import *
 from .permissions import IsAnonymous
 from .tokens import PasswordResetToken
@@ -85,5 +86,50 @@ class VerifyOTPApiView(generics.GenericAPIView):
         return Response(
             {"detail": "OTP verified successfully.",
              "reset_token":str(reset_token)},
+            status=status.HTTP_200_OK
+        )
+    
+class ResetPasswordApiView(generics.GenericAPIView):
+    serializer_class = ResetPasswordSerializer
+
+    def post(self, request, *args, **kwargs):
+        token = request.headers.get("Authorization")
+
+        if not token:
+            return Response(
+                {"detail": "Reset token is required."},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        try:
+            token = token.split(" ")[1]
+            reset_token = PasswordResetToken(token)
+
+        except (IndexError, TokenError):
+            return Response(
+                {"detail": "Invalid or expired reset token."},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        if reset_token.get("token_type") != "password_reset":
+            return Response(
+                {"detail": "Invalid reset token."},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        user_id = reset_token.get("user_id")
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response(
+                {"detail": "User does not exist."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=user)
+
+        return Response(
+            {"detail": "Password reset successfully."},
             status=status.HTTP_200_OK
         )
