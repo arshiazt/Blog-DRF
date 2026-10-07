@@ -70,3 +70,16 @@ class ForgotPasswordApiView(generics.GenericAPIView):
             {"detail": "OTP has been sent successfully."},
             status=status.HTTP_200_OK
         )
+    
+class VerifyOTPApiView(generics.GenericAPIView):
+    serializer_class = VerifyOTPSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+
+        return Response(
+            {"detail": "OTP verified successfully."},
+            status=status.HTTP_200_OK
+        )
