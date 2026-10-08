@@ -18,4 +18,5 @@ urlpatterns = [
     path('reset-password/',views.ResetPasswordApiView.as_view(),name='reset-password'),
 
     path('change-phone/',views.PhoneChangeApiView.as_view(),name='phone-change'),
+    path('verify-phone/',views.VerifyPhoneChangeOTPApiView.as_view(),name='phone-verify'),
 ]
