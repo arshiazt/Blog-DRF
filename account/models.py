@@ -83,3 +83,23 @@ class PasswordResetOTPCode(models.Model):
             is_used=is_used
         )
         return otp_code
+    
+class PhoneResetOTP(models.Model):
+
+    user = models.ForeignKey(User,on_delete=models.CASCADE,related_name='phone_reset_otp')
+    new_phone = models.CharField(max_length=11)
+    otp_code = models.CharField(max_length=6)
+    is_used = models.BooleanField(default=False)
+    created_date = models.DateTimeField(auto_now_add=True)
+
+    @classmethod
+    def generate_otp(cls,user,new_phone):
+        otp_code = str(random.randint(100000,999999))
+        is_used = False
+        cls.objects.create(
+            user=user,
+            new_phone=new_phone,
+            otp_code=otp_code,
+            is_used=is_used
+        )
+        return otp_code
