@@ -252,6 +252,7 @@ class PhoneChangeSerializer(serializers.Serializer):
 class VerifyPhoneChangeOTPSerializer(serializers.Serializer):
     new_phone = serializers.CharField(max_length=11,write_only=True)
     otp_code = serializers.CharField(max_length=6,write_only=True)
+    refresh = serializers.CharField(write_only=True)
 
     def validate(self, attrs):
         user = self.context['request'].user

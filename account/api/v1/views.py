@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
+from django.db import transaction
 from .serializers import *
 from .permissions import IsAnonymous
 from .tokens import PasswordResetToken
@@ -152,3 +153,33 @@ class PhoneChangeApiView(generics.GenericAPIView):
             "detail": "OTP code sent successfully.",
         },
         status=status.HTTP_200_OK)
+    
+class VerifyPhoneChangeOTPApiView(generics.GenericAPIView):
+    serializer_class = VerifyPhoneChangeOTPSerializer
+    permission_classes = [IsAuthenticated]
+
+    @transaction.atomic
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user = request.user
+        new_phone = serializer.validated_data['new_phone']
+        otp = serializer.validated_data['otp']
+        refresh = serializer.validated_data['refresh']
+
+        refresh_token = RefreshToken(refresh)
+        refresh_token.blacklist()
+
+        user.phone = new_phone
+        user.save(update_fields=['phone'])
+
+        otp.is_used = True
+        otp.save(update_fields=['is_used'])
+
+        return Response(
+            {
+                "detail": "Phone number changed successfully."
+            },
+            status=status.HTTP_200_OK
+        )
