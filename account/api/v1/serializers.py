@@ -248,3 +248,33 @@ class PhoneChangeSerializer(serializers.Serializer):
             )
 
         return value
+    
+class VerifyPhoneChangeOTPSerializer(serializers.Serializer):
+    new_phone = serializers.CharField(max_length=11,write_only=True)
+    otp_code = serializers.CharField(max_length=6,write_only=True)
+
+    def validate(self, attrs):
+        user = self.context['request'].user
+        new_phone = attrs['new_phone']
+        otp_code = attrs['otp_code']
+
+        otp = PhoneResetOTP.objects.filter(
+            user=user,
+            new_phone=new_phone,
+            otp_code=otp_code,
+            is_used=False
+        ).order_by('-created_date').first()
+
+        if not otp:
+            raise serializers.ValidationError({
+                "otp_code": "Invalid OTP code."
+            })
+        expiration_time = otp.created_date + timedelta(minutes=2)
+
+        if timezone.now() > expiration_time:
+            raise serializers.ValidationError({
+                "otp_code": "OTP has expired."
+            })
+        attrs['otp'] = otp
+
+        return attrs
