@@ -135,3 +135,20 @@ class ResetPasswordApiView(generics.GenericAPIView):
             {"detail": "Password reset successfully."},
             status=status.HTTP_200_OK
         )
+    
+class PhoneChangeApiView(generics.GenericAPIView):
+    serializer_class = PhoneChangeSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        new_phone = serializer.validated_data['new_phone']
+        otp_code = PhoneResetOTP.generate_otp(request.user,new_phone=new_phone)
+        send_otp_code_task.delay(new_phone,otp_code)
+
+        return Response({
+            "detail": "OTP code sent successfully.",
+        },
+        status=status.HTTP_200_OK)
