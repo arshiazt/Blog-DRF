@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from account.models import User, PasswordResetOTPCode
+from account.models import User, PasswordResetOTPCode, PhoneResetOTP
 from django.contrib.auth.password_validation import validate_password
 from django.core import exceptions
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -220,3 +220,31 @@ class ResetPasswordSerializer(serializers.Serializer):
         user.save()
 
         return user
+    
+class PhoneChangeSerializer(serializers.Serializer):
+    new_phone = serializers.CharField(max_length=11,write_only=True)
+
+    def validate_new_phone(self, value):
+        if len(value) != 11:
+            raise serializers.ValidationError(
+                "Phone must be exactly 11 digits."
+            )
+
+        if not value.isdigit():
+            raise serializers.ValidationError(
+                "Phone must contain only digits."
+            )
+        
+        user = self.context['request'].user
+
+        if value == user.phone:
+            raise serializers.ValidationError(
+                "New phone number must be different from the current phone number."
+            )
+
+        if User.objects.filter(phone=value).exists():
+            raise serializers.ValidationError(
+                "This phone number is already in use."
+            )
+
+        return value
