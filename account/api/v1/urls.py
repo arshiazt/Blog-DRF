@@ -19,4 +19,6 @@ urlpatterns = [
 
     path('change-phone/',views.PhoneChangeApiView.as_view(),name='phone-change'),
     path('verify-phone/',views.VerifyPhoneChangeOTPApiView.as_view(),name='phone-verify'),
+
+    path('deactivate/',views.DeactivateAccountApiView.as_view(),name='deactivate'),
 ]
