@@ -279,3 +279,6 @@ class VerifyPhoneChangeOTPSerializer(serializers.Serializer):
         attrs['otp'] = otp
 
         return attrs
+    
+class DeactivateAccountSerializer(serializers.Serializer):
+    refresh = serializers.CharField(write_only=True)
