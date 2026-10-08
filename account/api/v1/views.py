@@ -183,3 +183,27 @@ class VerifyPhoneChangeOTPApiView(generics.GenericAPIView):
             },
             status=status.HTTP_200_OK
         )
+    
+class DeactivateAccountApiView(generics.GenericAPIView):
+    serializer_class = DeactivateAccountSerializer
+    permission_classes = [IsAuthenticated]
+
+    @transaction.atomic
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        refresh = serializer.validated_data['refresh']
+        refresh_token = RefreshToken(refresh)
+        refresh_token.blacklist()
+        
+        user = request.user
+        user.is_active = False
+        user.save(update_fields=['is_active'])
+
+        return Response(
+            {
+                'detail': 'Account deactivated successfully.'
+            },
+            status=status.HTTP_200_OK
+        )
