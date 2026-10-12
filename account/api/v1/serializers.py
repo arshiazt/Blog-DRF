@@ -1,13 +1,14 @@
 from rest_framework import serializers
 from account.models import User, PasswordResetOTPCode, PhoneResetOTP
-from django.contrib.auth.password_validation import validate_password
-from django.core import exceptions
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from datetime import timedelta
 from django.utils import timezone
+from .validators import validate_phone, validate_user_password, validate_otp_code
 
 class RegistrationSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(max_length=255, write_only=True, min_length=8, validators=[validate_user_password])
     password_confirm = serializers.CharField(max_length=255, write_only=True, min_length=8)
+    phone = serializers.CharField(max_length=11,validators=[validate_phone])
 
     class Meta:
         model = User
@@ -18,23 +19,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
         if attrs.get('password') != attrs.get('password_confirm'):
             raise serializers.ValidationError({"detail": "passswords doesnt match"})
         return super().validate(attrs)
-    
-    def validate_password(self, value):
-        try:
-            validate_password(value)
-        except exceptions.ValidationError as e:
-            raise serializers.ValidationError({"password": list(e.messages)})
-        
-        return value
-    
-    def validate_phone(self, value):
-        if len(value) != 11:
-            raise serializers.ValidationError({'phone':'Phone must be exactly 11 digits.'})
-        
-        if not value.isdigit():
-            raise serializers.ValidationError({'phone':'Phone must contain only digits.'})
-        
-        return value
     
     def create(self, validated_data):
         validated_data.pop('password_confirm')
@@ -70,7 +54,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 class PasswordChangeSerializer(serializers.Serializer):
 
     old_password = serializers.CharField(write_only=True)
-    new_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True,validators=[validate_user_password])
     new_password_confirm = serializers.CharField(write_only=True)
 
     def validate_old_password(self, value):
@@ -87,14 +71,6 @@ class PasswordChangeSerializer(serializers.Serializer):
                 "new_password_confirm": "Passwords do not match."
             })
         return attrs
-        
-    def validate_new_password(self, value):
-        try:
-            validate_password(value)
-        except exceptions.ValidationError as e:
-            raise serializers.ValidationError({"new_password": list(e.messages)})
-        
-        return value
     
     def save(self, **kwargs):
         user = self.context['request'].user
@@ -104,20 +80,7 @@ class PasswordChangeSerializer(serializers.Serializer):
         return user
     
 class ForgotPasswordSerializer(serializers.Serializer):
-    phone = serializers.CharField(max_length=11,write_only=True)
-
-    def validate_phone(self,value):
-        if len(value) != 11:
-            raise serializers.ValidationError(
-                'Phone must be exactly 11 digits.'
-            )
-        
-        if not value.isdigit():
-            raise serializers.ValidationError(
-                'Phone must contain only digits.'
-            )
-        
-        return value
+    phone = serializers.CharField(max_length=11,write_only=True,validators=[validate_phone])
     
     def validate(self, attrs):
         phone = attrs.get('phone')
@@ -131,34 +94,8 @@ class ForgotPasswordSerializer(serializers.Serializer):
         return attrs
     
 class VerifyOTPSerializer(serializers.Serializer):
-    phone = serializers.CharField(max_length=11,write_only=True)
-    otp_code = serializers.CharField(max_length=6,write_only=True)
-
-    def validate_phone(self,value):
-        if len(value) != 11:
-            raise serializers.ValidationError(
-                'Phone must be exactly 11 digits.'
-            )
-        
-        if not value.isdigit():
-            raise serializers.ValidationError(
-                'Phone must contain only digits.'
-            )
-        
-        return value
-    
-    def validate_otp_code(self,value):
-        if len(value)  != 6:
-            raise serializers.ValidationError(
-                "OTP must be exactly 6 digits."
-            )
-
-        if not value.isdigit():
-            raise serializers.ValidationError(
-                "OTP must contain only digits."
-            )
-        
-        return value
+    phone = serializers.CharField(max_length=11,write_only=True,validators=[validate_phone])
+    otp_code = serializers.CharField(max_length=6,write_only=True,validators=[validate_otp_code])
     
     def validate(self, attrs):
         phone = attrs.get('phone')
@@ -196,7 +133,7 @@ class VerifyOTPSerializer(serializers.Serializer):
     
 class ResetPasswordSerializer(serializers.Serializer):
     
-    new_password = serializers.CharField(write_only=True,min_length=8)
+    new_password = serializers.CharField(write_only=True,min_length=8,validators=[validate_user_password])
     new_password_confirm = serializers.CharField(write_only=True,min_length=8)
 
     def validate(self, attrs):
@@ -205,14 +142,6 @@ class ResetPasswordSerializer(serializers.Serializer):
                 "new_password_confirm": "Passwords do not match."
             })
         return attrs
-        
-    def validate_new_password(self, value):
-        try:
-            validate_password(value)
-        except exceptions.ValidationError as e:
-            raise serializers.ValidationError({"new_password": list(e.messages)})
-        
-        return value
     
     def save(self, **kwargs):
         user = self.context['user']
@@ -222,19 +151,9 @@ class ResetPasswordSerializer(serializers.Serializer):
         return user
     
 class PhoneChangeSerializer(serializers.Serializer):
-    new_phone = serializers.CharField(max_length=11,write_only=True)
+    new_phone = serializers.CharField(max_length=11,write_only=True,validators=[validate_phone])
 
     def validate_new_phone(self, value):
-        if len(value) != 11:
-            raise serializers.ValidationError(
-                "Phone must be exactly 11 digits."
-            )
-
-        if not value.isdigit():
-            raise serializers.ValidationError(
-                "Phone must contain only digits."
-            )
-        
         user = self.context['request'].user
 
         if value == user.phone:
@@ -250,8 +169,8 @@ class PhoneChangeSerializer(serializers.Serializer):
         return value
     
 class VerifyPhoneChangeOTPSerializer(serializers.Serializer):
-    new_phone = serializers.CharField(max_length=11,write_only=True)
-    otp_code = serializers.CharField(max_length=6,write_only=True)
+    new_phone = serializers.CharField(max_length=11,write_only=True,validators=[validate_phone])
+    otp_code = serializers.CharField(max_length=6,write_only=True,validators=[validate_otp_code])
     refresh = serializers.CharField(write_only=True)
 
     def validate(self, attrs):
