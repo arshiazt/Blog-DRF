@@ -193,17 +193,23 @@ class DeactivateAccountApiView(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        refresh = serializer.validated_data['refresh']
-        refresh_token = RefreshToken(refresh)
+        refresh = serializer.validated_data["refresh"]
+
+        try:
+            refresh_token = RefreshToken(refresh)
+        except TokenError:
+            return Response(
+                {"detail": "Invalid refresh token."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         refresh_token.blacklist()
-        
+
         user = request.user
         user.is_active = False
-        user.save(update_fields=['is_active'])
+        user.save(update_fields=["is_active"])
 
         return Response(
-            {
-                'detail': 'Account deactivated successfully.'
-            },
-            status=status.HTTP_200_OK
+            {"detail": "Account deactivated successfully."},
+            status=status.HTTP_200_OK,
         )
