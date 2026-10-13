@@ -14,6 +14,13 @@ class RegistrationSerializer(serializers.ModelSerializer):
         model = User
         fields = ['phone','user_name','first_name','last_name',
                   'password','password_confirm']
+        
+    def validate_phone(self, value):
+        if User.objects.filter(phone=value).exists():
+            raise serializers.ValidationError(
+                "This phone number is already registered."
+            )
+        return value
     
     def validate(self, attrs):
         if attrs.get('password') != attrs.get('password_confirm'):
