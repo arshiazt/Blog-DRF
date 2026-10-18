@@ -147,6 +147,7 @@ REST_FRAMEWORK = {
         "verify_otp": "5/min",
         "reset_password": "3/hour",
         "phone_change": "3/hour",
+        "verify_phone": "5/min",
     },
 }
 

@@ -10,7 +10,7 @@ from .permissions import IsAnonymous
 from .tokens import PasswordResetToken
 from ...tasks import send_otp_code_task
 from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView
-from account.throttles import (LoginThrottle,RegisterThrottle,LogoutThrottle,PhoneChangeThrottle,
+from account.throttles import (LoginThrottle,RegisterThrottle,LogoutThrottle,PhoneChangeThrottle,VerifyPhoneChangeThrottle,
                                TokenRefreshThrottle,TokenVerifyThrottle,ResetPasswordThrottle,
                                PasswordChangeThrottle,ForgotPasswordThrottle,VerifyOTPThrottle)
 
@@ -175,6 +175,7 @@ class PhoneChangeApiView(generics.GenericAPIView):
 class VerifyPhoneChangeOTPApiView(generics.GenericAPIView):
     serializer_class = VerifyPhoneChangeOTPSerializer
     permission_classes = [IsAuthenticated]
+    throttle_classes = [VerifyPhoneChangeThrottle]
 
     @transaction.atomic
     def post(self, request, *args, **kwargs):
