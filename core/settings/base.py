@@ -142,6 +142,7 @@ REST_FRAMEWORK = {
         "logout": "5/min",
         "token_refresh": "10/min",
         "token_verify": "20/min",
+        "password_change": "3/hour",
     },
 }
 

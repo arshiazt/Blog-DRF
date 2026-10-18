@@ -14,3 +14,6 @@ class TokenRefreshThrottle(AnonRateThrottle):
 
 class TokenVerifyThrottle(AnonRateThrottle):
     scope = "token_verify"
+
+class PasswordChangeThrottle(UserRateThrottle):
+    scope = "password_change"
