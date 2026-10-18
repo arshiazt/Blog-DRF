@@ -9,11 +9,12 @@ from .serializers import *
 from .permissions import IsAnonymous
 from .tokens import PasswordResetToken
 from ...tasks import send_otp_code_task
-from account.throttles import LoginThrottle
+from account.throttles import (LoginThrottle,RegisterThrottle)
 
 class RegisterCreateApiView(generics.CreateAPIView):
     serializer_class = RegistrationSerializer
     permission_classes = [IsAnonymous]
+    throttle_classes = [RegisterThrottle]
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
