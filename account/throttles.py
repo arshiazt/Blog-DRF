@@ -26,3 +26,6 @@ class VerifyOTPThrottle(AnonRateThrottle):
 
 class ResetPasswordThrottle(AnonRateThrottle):
     scope = "reset_password"
+
+class PhoneChangeThrottle(UserRateThrottle):
+    scope = "phone_change"
