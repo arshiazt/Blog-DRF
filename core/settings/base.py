@@ -144,6 +144,7 @@ REST_FRAMEWORK = {
         "token_verify": "20/min",
         "password_change": "3/hour",
         "forgot_password": "3/hour",
+        "verify_otp": "5/min",
     },
 }
 

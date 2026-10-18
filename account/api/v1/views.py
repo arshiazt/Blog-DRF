@@ -12,7 +12,7 @@ from ...tasks import send_otp_code_task
 from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView
 from account.throttles import (LoginThrottle,RegisterThrottle,LogoutThrottle,
                                TokenRefreshThrottle,TokenVerifyThrottle,
-                               PasswordChangeThrottle,ForgotPasswordThrottle)
+                               PasswordChangeThrottle,ForgotPasswordThrottle,VerifyOTPThrottle)
 
 class CustomTokenVerifyView(TokenVerifyView):
     throttle_classes = [TokenVerifyThrottle]
@@ -73,7 +73,7 @@ class PasswordChangeApiView(views.APIView):
 class ForgotPasswordApiView(generics.GenericAPIView):
     serializer_class = ForgotPasswordSerializer
     throttle_classes = [ForgotPasswordThrottle]
-    
+
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -91,6 +91,7 @@ class ForgotPasswordApiView(generics.GenericAPIView):
     
 class VerifyOTPApiView(generics.GenericAPIView):
     serializer_class = VerifyOTPSerializer
+    throttle_classes = [VerifyOTPThrottle]
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
