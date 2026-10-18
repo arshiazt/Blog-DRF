@@ -141,6 +141,7 @@ REST_FRAMEWORK = {
         "register": "3/min",
         "logout": "5/min",
         "token_refresh": "10/min",
+        "token_verify": "20/min",
     },
 }
 

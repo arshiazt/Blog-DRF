@@ -11,3 +11,6 @@ class LogoutThrottle(UserRateThrottle):
 
 class TokenRefreshThrottle(AnonRateThrottle):
     scope = "token_refresh"
+
+class TokenVerifyThrottle(AnonRateThrottle):
+    scope = "token_verify"
