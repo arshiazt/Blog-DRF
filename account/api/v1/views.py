@@ -9,7 +9,11 @@ from .serializers import *
 from .permissions import IsAnonymous
 from .tokens import PasswordResetToken
 from ...tasks import send_otp_code_task
-from account.throttles import (LoginThrottle,RegisterThrottle,LogoutThrottle)
+from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView
+from account.throttles import (LoginThrottle,RegisterThrottle,LogoutThrottle,TokenRefreshThrottle)
+
+class CustomTokenRefreshView(TokenRefreshView):
+    throttle_classes = [TokenRefreshThrottle]
 
 class RegisterCreateApiView(generics.CreateAPIView):
     serializer_class = RegistrationSerializer
@@ -23,7 +27,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 class LogoutApiView(views.APIView):
     permission_classes = [IsAuthenticated]
-    throttle_classes = [LoginThrottle]
+    throttle_classes = [LogoutThrottle]
 
     def post(self, request):
         refresh_token = request.data.get("refresh")
