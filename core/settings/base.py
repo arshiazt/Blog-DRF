@@ -143,6 +143,7 @@ REST_FRAMEWORK = {
         "token_refresh": "10/min",
         "token_verify": "20/min",
         "password_change": "3/hour",
+        "forgot_password": "3/hour",
     },
 }
 
