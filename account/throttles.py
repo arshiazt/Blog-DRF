@@ -8,3 +8,6 @@ class RegisterThrottle(AnonRateThrottle):
 
 class LogoutThrottle(UserRateThrottle):
     scope = "logout"
+
+class TokenRefreshThrottle(AnonRateThrottle):
+    scope = "token_refresh"
