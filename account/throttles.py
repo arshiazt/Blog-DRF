@@ -23,3 +23,6 @@ class ForgotPasswordThrottle(AnonRateThrottle):
 
 class VerifyOTPThrottle(AnonRateThrottle):
     scope = "verify_otp"
+
+class ResetPasswordThrottle(AnonRateThrottle):
+    scope = "reset_password"

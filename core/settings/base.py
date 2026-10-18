@@ -145,6 +145,7 @@ REST_FRAMEWORK = {
         "password_change": "3/hour",
         "forgot_password": "3/hour",
         "verify_otp": "5/min",
+        "reset_password": "3/hour",
     },
 }
 
