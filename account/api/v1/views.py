@@ -10,7 +10,10 @@ from .permissions import IsAnonymous
 from .tokens import PasswordResetToken
 from ...tasks import send_otp_code_task
 from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView
-from account.throttles import (LoginThrottle,RegisterThrottle,LogoutThrottle,TokenRefreshThrottle)
+from account.throttles import (LoginThrottle,RegisterThrottle,LogoutThrottle,TokenRefreshThrottle,TokenVerifyThrottle)
+
+class CustomTokenVerifyView(TokenVerifyView):
+    throttle_classes = [TokenVerifyThrottle]
 
 class CustomTokenRefreshView(TokenRefreshView):
     throttle_classes = [TokenRefreshThrottle]

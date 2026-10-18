@@ -1,5 +1,4 @@
 from django.urls import path
-from rest_framework_simplejwt.views import TokenVerifyView
 from . import views
 
 app_name = 'api-v1'
@@ -10,7 +9,7 @@ urlpatterns = [
     path('logout/', views.LogoutApiView.as_view(),name='logout'),
 
     path("jwt/refresh/", views.CustomTokenRefreshView.as_view(), name="jwt-refresh"),
-    path("jwt/verify/", TokenVerifyView.as_view(), name="jwt-verify"),
+    path("jwt/verify/", views.CustomTokenVerifyView.as_view(), name="jwt-verify"),
     
     path('change-password/',views.PasswordChangeApiView.as_view(),name='change-password'),
     path('forgot-password/',views.ForgotPasswordApiView.as_view(),name='forgot-password'),
