@@ -32,3 +32,6 @@ class PhoneChangeThrottle(UserRateThrottle):
 
 class VerifyPhoneChangeThrottle(UserRateThrottle):
     scope = "verify_phone"
+
+class DeactivateAccountThrottle(UserRateThrottle):
+    scope = "deactivate_account"

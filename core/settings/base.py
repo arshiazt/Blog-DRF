@@ -148,6 +148,7 @@ REST_FRAMEWORK = {
         "reset_password": "3/hour",
         "phone_change": "3/hour",
         "verify_phone": "5/min",
+        "deactivate_account": "3/hour",
     },
 }
 
