@@ -20,3 +20,12 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.phone
+    
+class Link(models.Model):
+
+    profile = models.ForeignKey(Profile,on_delete=models.CASCADE,related_name='links')
+    title = models.CharField(max_length=128)
+    url = models.URLField()
+
+    def __str__(self):
+        return f'{self.title} - {self.profile}'
