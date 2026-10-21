@@ -1,0 +1,8 @@
+from django.urls import path
+from . import views
+
+app_name = 'api-v1'
+
+urlpatterns = [
+    path('profile/me/',views.ProfileRetrieveUpdateAPIView.as_view(),name='profile-retriev-update'),
+]
