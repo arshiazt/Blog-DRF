@@ -18,3 +18,10 @@ class LinkListCreateAPIView(ListCreateAPIView):
     
     def perform_create(self, serializer):
         serializer.save(profile=self.request.user.profile)
+
+class LinkRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    serializer_class = LinkSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return self.request.user.profile.links.all()
