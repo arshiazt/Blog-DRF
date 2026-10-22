@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     # my app
     'account.apps.AccountConfig',
     'user.apps.UserConfig',
+    'blog.apps.BlogConfig',
 ]
 
 MIDDLEWARE = [
