@@ -3,6 +3,7 @@ from rest_framework.generics import (RetrieveUpdateAPIView, ListCreateAPIView,
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from .serializers import ProfileSerializer,LinkSerializer
 from user.models import Profile
+from django.shortcuts import get_object_or_404
 
 class ProfileRetrieveUpdateAPIView(RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
@@ -36,6 +37,6 @@ class ProfileRetrieveAPIView(RetrieveAPIView):
         return Profile.objects.select_related('user')
     
     def get_object(self):
-        return self.get_queryset().get(
+        return get_object_or_404(self.get_queryset(),
             user__user_name=self.kwargs['user_name']
         )
