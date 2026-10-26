@@ -80,9 +80,21 @@ class Comment(models.Model):
     content = models.TextField()
     is_active = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now_add=True)
-    
+
     class Meta:
         ordering = ['created_date']
+
+    def __str__(self):
+        return f'{self.user} - {self.post.title}'
+
+class Like(models.Model):
+
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='likes')
+    created_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('post', 'user')
 
     def __str__(self):
         return f'{self.user} - {self.post.title}'
