@@ -98,3 +98,15 @@ class Like(models.Model):
 
     def __str__(self):
         return f'{self.user} - {self.post.title}'
+    
+class Bookmark(models.Model):
+
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='bookmarks')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='bookmarks')
+    created_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('post', 'user')
+
+    def __str__(self):
+        return f'{self.user} - {self.post.title}'
