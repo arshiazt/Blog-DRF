@@ -1,5 +1,6 @@
 from ...models import (Category, Tag, Post, 
-                       PostImage,  Comment)
+                       PostImage,  Comment,
+                       Like)
 from rest_framework import serializers
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -65,3 +66,12 @@ class CommentSerializer(serializers.ModelSerializer):
                   'is_active', 'created_date']
         read_only_fields = ['id', 'post', 'user',
                             'is_active', 'created_date']
+        
+class LikeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Like
+        fields = ['id', 'post',
+                  'user', 'created_date']
+        read_only_fields = ['id', 'post',
+                  'user', 'created_date']
