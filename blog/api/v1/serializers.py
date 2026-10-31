@@ -1,4 +1,5 @@
-from ...models import (Category, Tag, Post)
+from ...models import (Category, Tag, Post, 
+                       PostImage)
 from rest_framework import serializers
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -45,3 +46,12 @@ class PostSerializer(serializers.ModelSerializer):
         ).data
 
         return data
+    
+class PostImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = PostImage
+        fields = ['id', 'post', 'image', 'is_main',
+                  'created_date', 'updated_date']
+        read_only_fields = ['id', 'post',
+                            'created_date', 'updated_date']
