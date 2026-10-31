@@ -1,6 +1,6 @@
 from ...models import (Category, Tag, Post, 
                        PostImage,  Comment,
-                       Like)
+                       Like, Bookmark)
 from rest_framework import serializers
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -71,6 +71,15 @@ class LikeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Like
+        fields = ['id', 'post',
+                  'user', 'created_date']
+        read_only_fields = ['id', 'post',
+                  'user', 'created_date']
+        
+class BookmarkSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Bookmark
         fields = ['id', 'post',
                   'user', 'created_date']
         read_only_fields = ['id', 'post',
