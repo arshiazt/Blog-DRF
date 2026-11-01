@@ -15,4 +15,6 @@ urlpatterns = [
     # Post urls
     path('post/',views.PostListApiView.as_view(),name='post-list'),
     path('post/<int:pk>/',views.PostDetailApiView.as_view(),name='post-detail'),
+    path('my-post/',views.PostListCreateAPIView.as_view(),name='my-post'),
+    path('my-post/<int:pk>/',views.PostRetrieveUpdateDestroyAPIView.as_view(),name='my-post-detail'),
 ]
