@@ -11,4 +11,8 @@ urlpatterns = [
     # Tag urls
     path('tags/',views.TagListAPIView.as_view(),name='tag-list'),
     path('tags/<int:pk>/',views.TagRetrieveAPIView.as_view(),name='tag-detail'),
+
+    # Post urls
+    path('post/',views.PostListApiView.as_view(),name='post-list'),
+    path('post/<int:pk>/',views.PostDetailApiView.as_view(),name='post-detail'),
 ]
