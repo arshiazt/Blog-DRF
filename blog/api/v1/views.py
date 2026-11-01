@@ -21,3 +21,7 @@ class TagRetrieveAPIView(generics.RetrieveAPIView):
 class PostListApiView(generics.ListAPIView):
     serializer_class = PostSerializer
     queryset = Post.objects.filter(status=Post.Status.PUBLISHED)
+
+class PostDetailApiView(generics.RetrieveAPIView):
+    serializer_class = PostSerializer
+    queryset = Post.objects.filter(status=Post.Status.PUBLISHED)
