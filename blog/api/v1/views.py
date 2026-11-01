@@ -13,3 +13,7 @@ class CategoryRetrieveAPIView(generics.RetrieveAPIView):
 class TagListAPIView(generics.ListAPIView):
     serializer_class = TagSerializer
     queryset = Tag.objects.all()
+
+class TagRetrieveAPIView(generics.RetrieveAPIView):
+    serializer_class = TagSerializer
+    queryset = Tag.objects.all()
