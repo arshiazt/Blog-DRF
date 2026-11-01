@@ -27,11 +27,18 @@ class PostDetailApiView(generics.RetrieveAPIView):
     queryset = Post.objects.filter(status=Post.Status.PUBLISHED)
 
 class PostListCreateAPIView(generics.ListCreateAPIView):
-     serializer_class = PostSerializer
-     permission_classes = [permissions.IsAuthenticated]
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
-     def get_queryset(self):
-         return Post.objects.filter(author=self.request.user)
+    def get_queryset(self):
+        return Post.objects.filter(author=self.request.user)
      
-     def perform_create(self, serializer):
-         serializer.save(author=self.request.user)
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+class PostRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Post.objects.filter(author=self.request.user)
