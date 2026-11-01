@@ -25,3 +25,13 @@ class PostListApiView(generics.ListAPIView):
 class PostDetailApiView(generics.RetrieveAPIView):
     serializer_class = PostSerializer
     queryset = Post.objects.filter(status=Post.Status.PUBLISHED)
+
+class PostListCreateAPIView(generics.ListCreateAPIView):
+     serializer_class = PostSerializer
+     permission_classes = [permissions.IsAuthenticated]
+
+     def get_queryset(self):
+         return Post.objects.filter(author=self.request.user)
+     
+     def perform_create(self, serializer):
+         serializer.save(author=self.request.user)
