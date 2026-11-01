@@ -1,6 +1,6 @@
-from .serializers import (CategorySerializer,TagSerializer)
+from .serializers import (CategorySerializer, TagSerializer, PostSerializer)
 from rest_framework import permissions, generics
-from ...models import (Category,Tag)
+from ...models import (Category, Tag, Post)
 
 class CategoryListApiView(generics.ListAPIView):
     serializer_class = CategorySerializer
@@ -17,3 +17,7 @@ class TagListAPIView(generics.ListAPIView):
 class TagRetrieveAPIView(generics.RetrieveAPIView):
     serializer_class = TagSerializer
     queryset = Tag.objects.all()
+
+class PostListApiView(generics.ListAPIView):
+    serializer_class = PostSerializer
+    queryset = Post.objects.filter(status=Post.Status.PUBLISHED)
