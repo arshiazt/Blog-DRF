@@ -34,7 +34,7 @@ class PostSerializer(serializers.ModelSerializer):
                   'slug', 'views_count', 'status',
                   'categories', 'tags', 'published_date',
                   'created_date' ,'updated_date']
-        read_only_fields = ['id', 'author', 'views_count',
+        read_only_fields = ['id', 'author', 'views_count', 'status',
                             'created_date', 'updated_date']
         
     def to_representation(self, instance):

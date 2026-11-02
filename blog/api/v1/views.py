@@ -1,6 +1,7 @@
 from .serializers import (CategorySerializer, TagSerializer, PostSerializer)
 from rest_framework import permissions, generics
 from ...models import (Category, Tag, Post)
+from django.utils import timezone
 
 class CategoryListApiView(generics.ListAPIView):
     serializer_class = CategorySerializer
@@ -42,3 +43,14 @@ class PostRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return Post.objects.filter(author=self.request.user)
+    
+class PostPublishApiView(generics.UpdateAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Post.objects.filter(author=self.request.user)
+    
+    def perform_update(self, serializer):
+        serializer.save(status=Post.Status.PUBLISHED,
+                        published_date=timezone.now())
