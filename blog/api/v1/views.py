@@ -1,7 +1,9 @@
 from .serializers import (CategorySerializer, TagSerializer, PostSerializer)
 from rest_framework import permissions, generics
+from rest_framework.response import Response
 from ...models import (Category, Tag, Post)
 from django.utils import timezone
+from django.db.models import F
 
 class CategoryListApiView(generics.ListAPIView):
     serializer_class = CategorySerializer
@@ -26,6 +28,16 @@ class PostListApiView(generics.ListAPIView):
 class PostDetailApiView(generics.RetrieveAPIView):
     serializer_class = PostSerializer
     queryset = Post.objects.filter(status=Post.Status.PUBLISHED)
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        Post.objects.filter(pk=instance.pk).update(
+            views_count=F('views_count')  + 1
+        )
+        instance.refresh_from_db()
+        serializer = self.get_serializer(instance)
+
+        return Response(serializer.data)
 
 class PostListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = PostSerializer
