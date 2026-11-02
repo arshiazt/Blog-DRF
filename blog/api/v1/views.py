@@ -1,9 +1,10 @@
 from .serializers import (CategorySerializer, TagSerializer, PostSerializer)
-from rest_framework import permissions, generics
+from rest_framework import permissions, generics, filters
 from rest_framework.response import Response
 from ...models import (Category, Tag, Post)
 from django.utils import timezone
 from django.db.models import F
+from django_filters.rest_framework import DjangoFilterBackend
 
 class CategoryListApiView(generics.ListAPIView):
     serializer_class = CategorySerializer
@@ -24,6 +25,14 @@ class TagRetrieveAPIView(generics.RetrieveAPIView):
 class PostListApiView(generics.ListAPIView):
     serializer_class = PostSerializer
     queryset = Post.objects.filter(status=Post.Status.PUBLISHED)
+
+    filter_backends = [filters.SearchFilter,
+                       filters.OrderingFilter,
+                       DjangoFilterBackend]
+
+    search_fields = ['title', 'content']
+    filterset_fields = ['categories', 'tags']
+    ordering_fields = ['published_date', 'views_count']
 
 class PostDetailApiView(generics.RetrieveAPIView):
     serializer_class = PostSerializer
